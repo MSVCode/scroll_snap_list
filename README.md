@@ -10,10 +10,9 @@ You can use this widget to achieve:
 - Scrollable InputSelect, like datetime picker in cupertino
 - Show daily entry for Health App and shows its detail directly below the list (reduce number of click)
 
-|![Horizontal List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/horizontal_list.gif)|![Vertical List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/vertical_list.gif)|
-|---------|--|
-|Simple Horizontal List|Vertical list with InkWell ListItems|
-|||
+|![Jumbotron List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/jumbotron_list.gif)||![Horizontal List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/horizontal_list.gif)|![Vertical List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/vertical_list.gif)|
+|-|-|-|
+|Horizontal Jumbotron List|Simple Horizontal List|Vertical list with InkWell ListItems|
 
 ## Getting Started
 In your flutter project `pubspec.yaml` add the dependency:
