@@ -7,10 +7,11 @@ This widget allows unrestricted scrolling (unlike other widget that only able to
 - Use `ListView.Builder`, means no Animation
 
 You can use this widget to achieve:
-- Scrollable InputSelect, like datetime picker in cupertino
+- Unrestricted scrollable Jumbotron
 - Show daily entry for Health App and shows its detail directly below the list (reduce number of click)
+- Scrollable InputSelect, like datetime picker in cupertino
 
-|![Jumbotron List](./readme_data/jumbotron_list.gif)|![Horizontal List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/horizontal_list.gif)|![Vertical List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/vertical_list.gif)|
+|![Jumbotron List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/jumbotron_list.gif)|![Horizontal List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/horizontal_list.gif)|![Vertical List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/vertical_list.gif)|
 |-----|-----|-----|
 |Horizontal Jumbotron List|Simple Horizontal List|Vertical list with InkWell ListItems|
 

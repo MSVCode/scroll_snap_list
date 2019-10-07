@@ -1,3 +1,6 @@
+## [0.1.3]
+- Updated readme
+
 ## [0.1.2]
 - Added Horizontal Jumbotron List demo
 
