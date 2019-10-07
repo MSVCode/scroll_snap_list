@@ -75,7 +75,7 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
                 child: ScrollSnapList(
                   onItemFocus: _onItemFocus,
                   itemSize: 35,
-                  buildListItem: _buildListItem,
+                  itemBuilder: _buildListItem,
                   itemCount: data.length,
                   reverse: true,
                 ),

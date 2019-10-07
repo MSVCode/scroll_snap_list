@@ -1,3 +1,7 @@
+## [0.2.0]
+- Fix bug sometimes scrolling stuck at the end of listview
+- Breaking: Changed `buildItemList` parameter to `itemBuilder`
+
 ## [0.1.3]
 - Updated readme
 

@@ -12,7 +12,7 @@ class ScrollSnapList extends StatefulWidget {
   final Color background;
 
   ///Widget builder.
-  final Widget Function(BuildContext, int) buildListItem;
+  final Widget Function(BuildContext, int) itemBuilder;
 
   ///Animation curve
   final Curve curve;
@@ -63,7 +63,7 @@ class ScrollSnapList extends StatefulWidget {
 
   ScrollSnapList({
     this.background,
-    @required this.buildListItem,
+    @required this.itemBuilder,
     this.curve = Curves.ease,
     this.duration = 500,
     this.focusOnItemTap = true,
@@ -101,10 +101,10 @@ class ScrollSnapListState extends State<ScrollSnapList> {
     if (widget.focusOnItemTap)
       return GestureDetector(
         onTap: () => focusToItem(index),
-        child: widget.buildListItem(context, index),
+        child: widget.itemBuilder(context, index),
       );
 
-    return widget.buildListItem(context, index);
+    return widget.itemBuilder(context, index);
   }
 
   ///Calculates target pixel for scroll animation
@@ -153,14 +153,20 @@ class ScrollSnapListState extends State<ScrollSnapList> {
               if (scrollInfo is ScrollEndNotification) {
                 if (scrollInfo.metrics.pixels >=
                     scrollInfo.metrics.maxScrollExtent - widget.itemSize / 2) {
+
                   _onReachEnd();
                 }
 
-                //snap the selecton
-                _animateScroll(_calcCardLocation(
-                  pixel: scrollInfo.metrics.pixels,
-                  itemSize: widget.itemSize,
-                ));
+                //snap the selection
+                double offset = _calcCardLocation(
+                    pixel: scrollInfo.metrics.pixels,
+                    itemSize: widget.itemSize,
+                );
+
+                //only animate if not yet snapped (tolerance 0.01 pixel)
+                if ((scrollInfo.metrics.pixels - offset).abs()>0.01){
+                  _animateScroll(offset);
+                }
               }
               return true;
             },

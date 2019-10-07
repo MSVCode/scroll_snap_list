@@ -1,6 +1,6 @@
 name: scroll_snap_list
 description: A Flutter widget that allows "snaping" event to an item at the end of user-scroll.
-version: 0.1.3
+version: 0.2.0
 author: Vincent Utomo <msvcode@gmail.com>
 homepage: https://github.com/MSVCode/scroll_snap_list
 repository: https://github.com/MSVCode/scroll_snap_list

@@ -20,7 +20,7 @@ In your flutter project `pubspec.yaml` add the dependency:
 ```yaml
 dependencies:
   ...
-  scroll_snap_list: ^0.1.0
+  scroll_snap_list: ^0.2.0
 ```
 
 ## Usage example
@@ -38,7 +38,7 @@ Expanded(
   child: ScrollSnapList(
     onItemFocus: _onItemFocus,
     itemSize: 35,
-    buildListItem: _buildListItem,
+    itemBuilder: _buildListItem,
     itemCount: data.length,
     reverse: true,
   ),
@@ -124,7 +124,7 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
                 child: ScrollSnapList(
                   onItemFocus: _onItemFocus,
                   itemSize: 35,
-                  buildListItem: _buildListItem,
+                  itemBuilder: _buildListItem,
                   itemCount: data.length,
                   reverse: true,
                 ),
@@ -178,7 +178,7 @@ Add `key` parameter to `SnapScrollList`.
 ScrollSnapList(
   onItemFocus: _onItemFocus,
   itemSize: 50,
-  buildListItem: _buildListItem,
+  itemBuilder: _buildListItem,
   itemCount: data.length,
   key: sslKey,
   scrollDirection: Axis.vertical,

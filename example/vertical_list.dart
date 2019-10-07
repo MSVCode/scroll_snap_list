@@ -82,7 +82,7 @@ class _VerticalListDemoState extends State<VerticalListDemo> {
                   child: ScrollSnapList(
                     onItemFocus: _onItemFocus,
                     itemSize: 50,
-                    buildListItem: _buildListItem,
+                    itemBuilder: _buildListItem,
                     itemCount: data.length,
                     key: sslKey,
                     scrollDirection: Axis.vertical,

@@ -75,7 +75,7 @@ class _HorizontalListJumboDemoState extends State<HorizontalListJumboDemo> {
                   margin: EdgeInsets.symmetric(vertical: 10),
                   onItemFocus: _onItemFocus,
                   itemSize: 360,
-                  buildListItem: _buildListItem,
+                  itemBuilder: _buildListItem,
                   itemCount: data.length,
                   key: sslKey,
                 ),
