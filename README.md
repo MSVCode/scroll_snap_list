@@ -13,7 +13,7 @@ You can use this widget to achieve:
 
 |![Jumbotron List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/jumbotron_list.gif)|![Horizontal List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/horizontal_list.gif)|![Vertical List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/vertical_list.gif)|
 |-----|-----|-----|
-|Horizontal Jumbotron List|Simple Horizontal List|Vertical list with InkWell ListItems|
+|Horizontal Jumbotron List|Horizontal List with infinite-loading|Vertical list with InkWell ListItems|
 
 ## Getting Started
 In your flutter project `pubspec.yaml` add the dependency:
