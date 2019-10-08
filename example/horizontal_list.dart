@@ -13,12 +13,13 @@ class HorizontalListDemo extends StatefulWidget {
 class _HorizontalListDemoState extends State<HorizontalListDemo> {
   List<int> data = [];
   int _focusedIndex = 0;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
 
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 10; i++) {
       data.add(Random().nextInt(100) + 1);
     }
   }
@@ -29,20 +30,38 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
     });
   }
 
+  void _loadMoreData() {
+    setState(() {
+      _isLoading = true;  
+    });
+    
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        for (int i = 0; i < 10; i++) {
+          data.add(Random().nextInt(100) + 1);
+        }
+        _isLoading = false;  
+      });
+    });
+  }
+
   Widget _buildItemDetail() {
     if (data.length > _focusedIndex)
       return Container(
-        height: 150,
+        height: 250,
         child: Text("index $_focusedIndex: ${data[_focusedIndex]}"),
       );
 
     return Container(
-      height: 150,
+      height: 250,
       child: Text("No Data"),
     );
   }
 
   Widget _buildListItem(BuildContext context, int index) {
+    if (index == data.length)
+      return Center(child: CircularProgressIndicator(),);
+
     //horizontal
     return Container(
       width: 35,
@@ -50,7 +69,7 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Container(
-            height: data[index].toDouble()*2,
+            height: data[index].toDouble() * 2,
             width: 25,
             color: Colors.lightBlueAccent,
             child: Text("i:$index\n${data[index]}"),
@@ -74,10 +93,12 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
               Expanded(
                 child: ScrollSnapList(
                   onItemFocus: _onItemFocus,
+                  onReachEnd: _loadMoreData,
                   itemSize: 35,
                   itemBuilder: _buildListItem,
-                  itemCount: data.length,
+                  itemCount: _isLoading?data.length+1:data.length,
                   reverse: true,
+                  endOfListTolerance: 100,
                 ),
               ),
               _buildItemDetail(),

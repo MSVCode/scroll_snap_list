@@ -20,6 +20,10 @@ class ScrollSnapList extends StatefulWidget {
   ///Animation duration in milliseconds (ms)
   final int duration;
 
+  ///Pixel tolerance to trigger onReachEnd.
+  ///Default is itemSize/2
+  final double endOfListTolerance;
+
   ///Focus to an item when user tap on it. Inactive if the list-item have its own onTap detector (use state-key to help focusing instead).
   final bool focusOnItemTap;
 
@@ -66,6 +70,7 @@ class ScrollSnapList extends StatefulWidget {
     @required this.itemBuilder,
     this.curve = Curves.ease,
     this.duration = 500,
+    this.endOfListTolerance,
     this.focusOnItemTap = true,
     this.focusToItem,
     this.itemCount = 0,
@@ -151,8 +156,9 @@ class ScrollSnapListState extends State<ScrollSnapList> {
           return NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
               if (scrollInfo is ScrollEndNotification) {
+                double tolerance = widget.endOfListTolerance ?? (widget.itemSize / 2);
                 if (scrollInfo.metrics.pixels >=
-                    scrollInfo.metrics.maxScrollExtent - widget.itemSize / 2) {
+                    scrollInfo.metrics.maxScrollExtent - tolerance) {
 
                   _onReachEnd();
                 }

@@ -1,3 +1,7 @@
+## [0.2.1]
+- Updated horizontal_list sample to include simulated data loading
+- Added `endOfListTolerance` to determine end-of-list position (which trigger `onReachEnd`)
+
 ## [0.2.0]
 - Fix bug sometimes scrolling stuck at the end of listview
 - Breaking: Changed `buildItemList` parameter to `itemBuilder`
