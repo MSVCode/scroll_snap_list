@@ -212,7 +212,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                   _animateScroll(offset);
                 }
               } else if (scrollInfo is ScrollUpdateNotification &&
-                  widget.updateOnScroll) {
+                  widget.updateOnScroll == true) {
                 // dont notify the listener until after the first drag
                 if (widget.onItemFocus != null && isInit == false) {
                   int cardIndex =
