@@ -159,7 +159,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   }
 
   void focusToInitialPosition() {
-    _animateScroll((widget.initialIndex * widget.itemSize).toDouble());
+    _listController.jumpTo((widget.initialIndex * widget.itemSize));
   }
 
   ///Trigger callback on reach end-of-list
