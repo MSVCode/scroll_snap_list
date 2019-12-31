@@ -188,12 +188,6 @@ class ScrollSnapListState extends State<ScrollSnapList> {
           return NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
               if (scrollInfo is ScrollEndNotification) {
-                // dont snap until after the initial position
-                if (isInit) {
-                  isInit = false;
-                  return true;
-                }
-
                 double tolerance =
                     widget.endOfListTolerance ?? (widget.itemSize / 2);
                 if (scrollInfo.metrics.pixels >=
@@ -213,7 +207,12 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                 }
               } else if (scrollInfo is ScrollUpdateNotification &&
                   widget.updateOnScroll == true) {
-                // dont notify the listener until after the first drag
+                // dont snap until after the initial position
+                if (isInit) {
+                  isInit = false;
+                  return true;
+                }
+
                 if (widget.onItemFocus != null && isInit == false) {
                   int cardIndex =
                       ((scrollInfo.metrics.pixels - widget.itemSize / 2) /
