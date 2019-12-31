@@ -76,6 +76,7 @@ class ScrollSnapList extends StatefulWidget {
   ScrollSnapList({
     this.background,
     @required this.itemBuilder,
+    ScrollController listController,
     this.curve = Curves.ease,
     this.duration = 500,
     this.endOfListTolerance,
@@ -92,8 +93,7 @@ class ScrollSnapList extends StatefulWidget {
     this.updateOnScroll,
     this.initialIndex,
     this.scrollDirection = Axis.horizontal,
-    this.listController = ScrollController(),
-  }) : super(key: key);
+  }) : listController = listController ?? ScrollController(), super(key: key);
 
   @override
   ScrollSnapListState createState() => ScrollSnapListState();
