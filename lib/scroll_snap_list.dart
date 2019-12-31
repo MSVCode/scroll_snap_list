@@ -71,6 +71,8 @@ class ScrollSnapList extends StatefulWidget {
 
   final Axis scrollDirection;
 
+  final ScrollController listController;
+  
   ScrollSnapList({
     this.background,
     @required this.itemBuilder,
@@ -90,6 +92,7 @@ class ScrollSnapList extends StatefulWidget {
     this.updateOnScroll,
     this.initialIndex,
     this.scrollDirection = Axis.horizontal,
+    this.listController = ScrollController(),
   }) : super(key: key);
 
   @override
@@ -97,8 +100,6 @@ class ScrollSnapList extends StatefulWidget {
 }
 
 class ScrollSnapListState extends State<ScrollSnapList> {
-  ScrollController _listController = ScrollController();
-
   //true if initialIndex exists and first drag hasn't occurred
   bool isInit = true;
 
@@ -116,7 +117,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   ///Scroll list to an offset
   void _animateScroll(double location) {
     Future.delayed(Duration.zero, () {
-      _listController.animateTo(
+      widget.listController.animateTo(
         location,
         duration: new Duration(milliseconds: widget.duration),
         curve: widget.curve,
@@ -159,7 +160,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   }
 
   void focusToInitialPosition() {
-    _listController.jumpTo((widget.initialIndex * widget.itemSize));
+    widget.listController.jumpTo((widget.initialIndex * widget.itemSize));
   }
 
   ///Trigger callback on reach end-of-list
@@ -169,7 +170,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
   @override
   void dispose() {
-    _listController.dispose();
+    widget.listController.dispose();
     super.dispose();
   }
 
@@ -224,7 +225,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
               return true;
             },
             child: ListView.builder(
-              controller: _listController,
+              controller: widget.listController,
               padding: widget.scrollDirection == Axis.horizontal
                   ? EdgeInsets.symmetric(horizontal: _listPadding)
                   : EdgeInsets.symmetric(
