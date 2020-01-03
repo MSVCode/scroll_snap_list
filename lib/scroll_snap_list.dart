@@ -63,16 +63,18 @@ class ScrollSnapList extends StatefulWidget {
   ///Reverse scrollDirection
   final bool reverse;
 
-  //Calls onItemFocus (if it exists) when ScrollUpdateNotification fires
+  ///Calls onItemFocus (if it exists) when ScrollUpdateNotification fires
   final bool updateOnScroll;
 
-  //An optional initial position which will not snap until after the first drag
+  ///An optional initial position which will not snap until after the first drag
   final double initialIndex;
 
+  ///ListView's scrollDirection
   final Axis scrollDirection;
 
+  ///Allows external controller
   final ScrollController listController;
-  
+
   ScrollSnapList({
     this.background,
     @required this.itemBuilder,
@@ -93,7 +95,8 @@ class ScrollSnapList extends StatefulWidget {
     this.updateOnScroll,
     this.initialIndex,
     this.scrollDirection = Axis.horizontal,
-  }) : listController = listController ?? ScrollController(), super(key: key);
+  })  : listController = listController ?? ScrollController(),
+        super(key: key);
 
   @override
   ScrollSnapListState createState() => ScrollSnapListState();
@@ -102,15 +105,25 @@ class ScrollSnapList extends StatefulWidget {
 class ScrollSnapListState extends State<ScrollSnapList> {
   //true if initialIndex exists and first drag hasn't occurred
   bool isInit = true;
+  //to avoid multiple onItemFocus when using updateOnScroll
+  int previousIndex = -1;
 
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialIndex != null) {
+        //set list's initial position
         focusToInitialPosition();
       } else {
         isInit = false;
       }
+    });
+
+    ///After initial jump, set isInit to false
+    Future.delayed(Duration(milliseconds: 10), () {
+      setState(() {
+        isInit = false;
+      });
     });
   }
 
@@ -136,6 +149,8 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   }
 
   ///Calculates target pixel for scroll animation
+  ///
+  ///Then trigger `onItemFocus`
   double _calcCardLocation(
       {double pixel, @required double itemSize, int index}) {
     //current pixel: pixel
@@ -145,7 +160,11 @@ class ScrollSnapListState extends State<ScrollSnapList> {
     int cardIndex =
         index != null ? index : ((pixel - itemSize / 2) / itemSize).ceil();
 
-    if (widget.onItemFocus != null) widget.onItemFocus(cardIndex);
+    //trigger onItemFocus
+    if (widget.onItemFocus != null && cardIndex != previousIndex) {
+      previousIndex = cardIndex;
+      widget.onItemFocus(cardIndex);
+    }
 
     //target position
     return (cardIndex * itemSize);
@@ -159,6 +178,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
     _animateScroll(targetLoc);
   }
 
+  ///Determine location if initialIndex is set
   void focusToInitialPosition() {
     widget.listController.jumpTo((widget.initialIndex * widget.itemSize));
   }
@@ -189,6 +209,11 @@ class ScrollSnapListState extends State<ScrollSnapList> {
           return NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
               if (scrollInfo is ScrollEndNotification) {
+                // dont snap until after first drag
+                if (isInit) {
+                  return true;
+                }
+
                 double tolerance =
                     widget.endOfListTolerance ?? (widget.itemSize / 2);
                 if (scrollInfo.metrics.pixels >=
@@ -203,23 +228,22 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                 );
 
                 //only animate if not yet snapped (tolerance 0.01 pixel)
+                print("called oi");
                 if ((scrollInfo.metrics.pixels - offset).abs() > 0.01) {
                   _animateScroll(offset);
                 }
               } else if (scrollInfo is ScrollUpdateNotification &&
                   widget.updateOnScroll == true) {
-                // dont snap until after the initial position
+                // dont snap until after first drag
                 if (isInit) {
-                  isInit = false;
                   return true;
                 }
 
                 if (widget.onItemFocus != null && isInit == false) {
-                  int cardIndex =
-                      ((scrollInfo.metrics.pixels - widget.itemSize / 2) /
-                              widget.itemSize)
-                          .ceil();
-                  widget.onItemFocus(cardIndex);
+                  _calcCardLocation(
+                    pixel: scrollInfo.metrics.pixels,
+                    itemSize: widget.itemSize,
+                  );
                 }
               }
               return true;

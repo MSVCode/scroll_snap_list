@@ -20,7 +20,7 @@ In your flutter project `pubspec.yaml` add the dependency:
 ```yaml
 dependencies:
   ...
-  scroll_snap_list: ^0.2.0
+  scroll_snap_list: ^0.3.0
 ```
 
 ## Usage example
@@ -162,6 +162,27 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
   }
 }
 ```
+
+## Important parameters and explanation
+|Parameter|Explanation|
+|-----|-----|
+|itemBuilder|Same as ListView's itemBuilder|
+|curve|Animation curve when `snapping`|
+|duration|Animation duration|
+|endOfListTolerance|Pixel tolerance to trigger `onReachEnd`|
+|focusOnItemTap|Focus to an item when user tap on it. Inactive if the list-item have its own onTap detector (use state-key to help focusing instead).|
+|focusToItem|Method to manually trigger focus to an item. Call with help of `GlobalKey<ScrollSnapListState>`|
+|margin|Container's margin|
+|itemCount|Number of item in this list|
+|itemSize|Size used is width if `scrollDirection` is `Axis.horizontal`, height if `Axis.vertical`. Composed of the size of each item + its margin/padding.|
+|onItemFocus|Callback function when list snaps/focuses to an item
+|onReachEnd|Callback function when user reach end of list. E.g. load more data from db|
+|reverse|Same as ListView's `reverse` to reverse `scrollDirection`|
+|updateOnScroll|Calls onItemFocus (if it exists) when ScrollUpdateNotification fires|
+|initialIndex|Optional initial position which will not snap until after the first drag|
+|scrollDirection|ListView's `scrollDirection`|
+|listController|External `ScrollController`|
+
 
 ## Other Notice
 By default, `SnapScrollList` set `focusOnItemTap` as `true`. Means any tap event on items will trigger snap/focus event to that item.
