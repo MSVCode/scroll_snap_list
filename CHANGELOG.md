@@ -1,6 +1,7 @@
 ## [0.3.0]
 - Added updateOnScroll and initial value (value before first snap) (Thanks @hawkinsjb1 !)
-- Added checking to avoid multiple updateOnScroll call on same index
+- Added checking to avoid multiple onItemFocus call for the same index
+- Updated method to handle isInit (delayed instead of one trigger)
 
 ## [0.2.1]
 - Updated horizontal_list sample to include simulated data loading
