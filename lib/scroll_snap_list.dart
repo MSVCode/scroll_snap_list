@@ -63,11 +63,20 @@ class ScrollSnapList extends StatefulWidget {
   ///Reverse scrollDirection
   final bool reverse;
 
+  //Calls onItemFocus (if it exists) when ScrollUpdateNotification fires
+  final bool updateOnScroll;
+
+  //An optional initial position which will not snap until after the first drag
+  final double initialIndex;
+
   final Axis scrollDirection;
 
+  final ScrollController listController;
+  
   ScrollSnapList({
     this.background,
     @required this.itemBuilder,
+    ScrollController listController,
     this.curve = Curves.ease,
     this.duration = 500,
     this.endOfListTolerance,
@@ -81,20 +90,34 @@ class ScrollSnapList extends StatefulWidget {
     this.onReachEnd,
     this.padding,
     this.reverse = false,
+    this.updateOnScroll,
+    this.initialIndex,
     this.scrollDirection = Axis.horizontal,
-  }) : super(key: key);
+  }) : listController = listController ?? ScrollController(), super(key: key);
 
   @override
   ScrollSnapListState createState() => ScrollSnapListState();
 }
 
 class ScrollSnapListState extends State<ScrollSnapList> {
-  ScrollController _listController = ScrollController();
+  //true if initialIndex exists and first drag hasn't occurred
+  bool isInit = true;
+
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialIndex != null) {
+        focusToInitialPosition();
+      } else {
+        isInit = false;
+      }
+    });
+  }
 
   ///Scroll list to an offset
   void _animateScroll(double location) {
     Future.delayed(Duration.zero, () {
-      _listController.animateTo(
+      widget.listController.animateTo(
         location,
         duration: new Duration(milliseconds: widget.duration),
         curve: widget.curve,
@@ -113,15 +136,16 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   }
 
   ///Calculates target pixel for scroll animation
-  double _calcCardLocation({double pixel, @required double itemSize, int index}) {
+  double _calcCardLocation(
+      {double pixel, @required double itemSize, int index}) {
     //current pixel: pixel
     //listPadding is not considered as moving pixel by scroll (0.0 is after padding)
     //substracted by itemSize/2 (to center the item)
     //divided by pixels taken by each item
-    int cardIndex = index != null ? index : ((pixel - itemSize / 2) / itemSize).ceil();
+    int cardIndex =
+        index != null ? index : ((pixel - itemSize / 2) / itemSize).ceil();
 
-    if (widget.onItemFocus!=null)
-      widget.onItemFocus(cardIndex);
+    if (widget.onItemFocus != null) widget.onItemFocus(cardIndex);
 
     //target position
     return (cardIndex * itemSize);
@@ -130,8 +154,13 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   /// Trigger focus to an item inside the list
   /// Will trigger scoll animation to focused item
   void focusToItem(int index) {
-    double targetLoc = _calcCardLocation(index: index, itemSize: widget.itemSize);
+    double targetLoc =
+        _calcCardLocation(index: index, itemSize: widget.itemSize);
     _animateScroll(targetLoc);
+  }
+
+  void focusToInitialPosition() {
+    widget.listController.jumpTo((widget.initialIndex * widget.itemSize));
   }
 
   ///Trigger callback on reach end-of-list
@@ -141,7 +170,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
   @override
   void dispose() {
-    _listController.dispose();
+    widget.listController.dispose();
     super.dispose();
   }
 
@@ -152,37 +181,56 @@ class ScrollSnapListState extends State<ScrollSnapList> {
       margin: widget.margin,
       child: LayoutBuilder(
         builder: (BuildContext ctx, BoxConstraints constraint) {
-          double _listPadding = (widget.scrollDirection==Axis.horizontal?constraint.maxWidth:constraint.maxHeight) / 2 - widget.itemSize / 2;
+          double _listPadding = (widget.scrollDirection == Axis.horizontal
+                      ? constraint.maxWidth
+                      : constraint.maxHeight) /
+                  2 -
+              widget.itemSize / 2;
           return NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
               if (scrollInfo is ScrollEndNotification) {
-                double tolerance = widget.endOfListTolerance ?? (widget.itemSize / 2);
+                double tolerance =
+                    widget.endOfListTolerance ?? (widget.itemSize / 2);
                 if (scrollInfo.metrics.pixels >=
                     scrollInfo.metrics.maxScrollExtent - tolerance) {
-
                   _onReachEnd();
                 }
 
                 //snap the selection
                 double offset = _calcCardLocation(
-                    pixel: scrollInfo.metrics.pixels,
-                    itemSize: widget.itemSize,
+                  pixel: scrollInfo.metrics.pixels,
+                  itemSize: widget.itemSize,
                 );
 
                 //only animate if not yet snapped (tolerance 0.01 pixel)
-                if ((scrollInfo.metrics.pixels - offset).abs()>0.01){
+                if ((scrollInfo.metrics.pixels - offset).abs() > 0.01) {
                   _animateScroll(offset);
+                }
+              } else if (scrollInfo is ScrollUpdateNotification &&
+                  widget.updateOnScroll == true) {
+                // dont snap until after the initial position
+                if (isInit) {
+                  isInit = false;
+                  return true;
+                }
+
+                if (widget.onItemFocus != null && isInit == false) {
+                  int cardIndex =
+                      ((scrollInfo.metrics.pixels - widget.itemSize / 2) /
+                              widget.itemSize)
+                          .ceil();
+                  widget.onItemFocus(cardIndex);
                 }
               }
               return true;
             },
             child: ListView.builder(
-              controller: _listController,
-              padding: widget.scrollDirection==Axis.horizontal?EdgeInsets.symmetric(
-                horizontal: _listPadding
-              ):EdgeInsets.symmetric(
-                vertical: _listPadding,
-              ),
+              controller: widget.listController,
+              padding: widget.scrollDirection == Axis.horizontal
+                  ? EdgeInsets.symmetric(horizontal: _listPadding)
+                  : EdgeInsets.symmetric(
+                      vertical: _listPadding,
+                    ),
               reverse: widget.reverse,
               scrollDirection: widget.scrollDirection,
               itemBuilder: _buildListItem,
