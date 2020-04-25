@@ -1,3 +1,6 @@
+## [0.3.1]
+- Fixed `animateTo` incorrectly removes user-scroll event
+
 ## [0.3.0]
 - Added updateOnScroll and initial value (value before first snap) (Thanks @hawkinsjb1 !)
 - Added checking to avoid multiple onItemFocus call for the same index

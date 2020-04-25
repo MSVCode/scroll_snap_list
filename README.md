@@ -229,3 +229,7 @@ Widget _buildListItem(BuildContext context, int index) {
 ```
 
 Full example for this part can be found in `example/vertical_list.dart`.
+
+# About
+Created by Vincent Utomo (MSVCode)
+Email: msvcode@gmail.com

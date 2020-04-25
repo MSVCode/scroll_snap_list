@@ -206,59 +206,62 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                       : constraint.maxHeight) /
                   2 -
               widget.itemSize / 2;
-          return NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo is ScrollEndNotification) {
-                // dont snap until after first drag
-                if (isInit) {
-                  return true;
-                }
+          return GestureDetector(
+            //by catching onTapDown gesture, it's possible to keep animateTo from removing user's scroll listener
+            onTapDown: (_){},
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (scrollInfo is ScrollEndNotification) {
+                  // dont snap until after first drag
+                  if (isInit) {
+                    return true;
+                  }
 
-                double tolerance =
-                    widget.endOfListTolerance ?? (widget.itemSize / 2);
-                if (scrollInfo.metrics.pixels >=
-                    scrollInfo.metrics.maxScrollExtent - tolerance) {
-                  _onReachEnd();
-                }
+                  double tolerance =
+                      widget.endOfListTolerance ?? (widget.itemSize / 2);
+                  if (scrollInfo.metrics.pixels >=
+                      scrollInfo.metrics.maxScrollExtent - tolerance) {
+                    _onReachEnd();
+                  }
 
-                //snap the selection
-                double offset = _calcCardLocation(
-                  pixel: scrollInfo.metrics.pixels,
-                  itemSize: widget.itemSize,
-                );
-
-                //only animate if not yet snapped (tolerance 0.01 pixel)
-                print("called oi");
-                if ((scrollInfo.metrics.pixels - offset).abs() > 0.01) {
-                  _animateScroll(offset);
-                }
-              } else if (scrollInfo is ScrollUpdateNotification &&
-                  widget.updateOnScroll == true) {
-                // dont snap until after first drag
-                if (isInit) {
-                  return true;
-                }
-
-                if (widget.onItemFocus != null && isInit == false) {
-                  _calcCardLocation(
+                  //snap the selection
+                  double offset = _calcCardLocation(
                     pixel: scrollInfo.metrics.pixels,
                     itemSize: widget.itemSize,
                   );
+
+                  //only animate if not yet snapped (tolerance 0.01 pixel)
+                  if ((scrollInfo.metrics.pixels - offset).abs() > 0.01) {
+                    _animateScroll(offset);
+                  }
+                } else if (scrollInfo is ScrollUpdateNotification &&
+                    widget.updateOnScroll == true) {
+                  // dont snap until after first drag
+                  if (isInit) {
+                    return true;
+                  }
+
+                  if (widget.onItemFocus != null && isInit == false) {
+                    _calcCardLocation(
+                      pixel: scrollInfo.metrics.pixels,
+                      itemSize: widget.itemSize,
+                    );
+                  }
                 }
-              }
-              return true;
-            },
-            child: ListView.builder(
-              controller: widget.listController,
-              padding: widget.scrollDirection == Axis.horizontal
-                  ? EdgeInsets.symmetric(horizontal: _listPadding)
-                  : EdgeInsets.symmetric(
-                      vertical: _listPadding,
-                    ),
-              reverse: widget.reverse,
-              scrollDirection: widget.scrollDirection,
-              itemBuilder: _buildListItem,
-              itemCount: widget.itemCount,
+                return true;
+              },
+              child: ListView.builder(
+                controller: widget.listController,
+                padding: widget.scrollDirection == Axis.horizontal
+                    ? EdgeInsets.symmetric(horizontal: _listPadding)
+                    : EdgeInsets.symmetric(
+                        vertical: _listPadding,
+                      ),
+                reverse: widget.reverse,
+                scrollDirection: widget.scrollDirection,
+                itemBuilder: _buildListItem,
+                itemCount: widget.itemCount,
+              ),
             ),
           );
         },
