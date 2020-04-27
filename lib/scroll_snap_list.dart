@@ -1,5 +1,7 @@
 library scroll_snap_list;
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 ///A ListView widget that able to "snap" or focus to an item whenever user scrolls.
@@ -75,6 +77,18 @@ class ScrollSnapList extends StatefulWidget {
   ///Allows external controller
   final ScrollController listController;
 
+  ///Scale item's size depending on distance to center
+  final bool dynamicItemSize;
+
+  ///Custom equation to determine dynamic item scaling calculation
+  ///
+  ///Input parameter is distance between item position and center of ScrollSnapList (Negative for left side, positive for right side)
+  ///
+  ///Output value is scale size (must be >=0, 1 is normal-size)
+  ///
+  ///Need to set `dynamicItemSize` to `true`
+  final double Function(double distance) dynamicSizeEquation;
+
   ScrollSnapList({
     this.background,
     @required this.itemBuilder,
@@ -84,7 +98,7 @@ class ScrollSnapList extends StatefulWidget {
     this.endOfListTolerance,
     this.focusOnItemTap = true,
     this.focusToItem,
-    this.itemCount = 0,
+    this.itemCount,
     @required this.itemSize,
     this.key,
     this.margin,
@@ -95,6 +109,8 @@ class ScrollSnapList extends StatefulWidget {
     this.updateOnScroll,
     this.initialIndex,
     this.scrollDirection = Axis.horizontal,
+    this.dynamicItemSize = false,
+    this.dynamicSizeEquation
   })  : listController = listController ?? ScrollController(),
         super(key: key);
 
@@ -107,6 +123,8 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   bool isInit = true;
   //to avoid multiple onItemFocus when using updateOnScroll
   int previousIndex = -1;
+  //Current scroll-position in pixel
+  double currentPixel = 0;
 
   void initState() {
     super.initState();
@@ -138,14 +156,37 @@ class ScrollSnapListState extends State<ScrollSnapList> {
     });
   }
 
+  ///Calculate scale transformation for dynamic item size
+  double calculateScale(int index){
+    //scroll-pixel position for index to be at the center of ScrollSnapList
+    double intendedPixel = index*widget.itemSize;
+    double difference = intendedPixel-currentPixel;
+
+    if (widget.dynamicSizeEquation!=null){
+      //force to be >= 0
+      double scale = widget.dynamicSizeEquation(difference);
+      return scale<0?0:scale;
+    }
+
+    //default equation
+    return 1-min(difference.abs()/500, 0.4);
+  }
+
   Widget _buildListItem(BuildContext context, int index) {
+    Widget child;
+    if (widget.dynamicItemSize){
+      child = Transform.scale(scale: calculateScale(index), child: widget.itemBuilder(context, index),);
+    } else {
+      child = widget.itemBuilder(context, index);
+    }
+    
     if (widget.focusOnItemTap)
       return GestureDetector(
         onTap: () => focusToItem(index),
-        child: widget.itemBuilder(context, index),
+        child: child,
       );
 
-    return widget.itemBuilder(context, index);
+    return child;
   }
 
   ///Calculates target pixel for scroll animation
@@ -208,7 +249,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
               widget.itemSize / 2;
           return GestureDetector(
             //by catching onTapDown gesture, it's possible to keep animateTo from removing user's scroll listener
-            onTapDown: (_){},
+            onTapDown: (_) {},
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
                 if (scrollInfo is ScrollEndNotification) {
@@ -234,18 +275,26 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                   if ((scrollInfo.metrics.pixels - offset).abs() > 0.01) {
                     _animateScroll(offset);
                   }
-                } else if (scrollInfo is ScrollUpdateNotification &&
-                    widget.updateOnScroll == true) {
-                  // dont snap until after first drag
-                  if (isInit) {
-                    return true;
+                } else if (scrollInfo is ScrollUpdateNotification) {
+                  //save pixel position for scale-effect
+                  if (widget.dynamicItemSize){
+                    setState(() {
+                      currentPixel = scrollInfo.metrics.pixels;  
+                    });
                   }
 
-                  if (widget.onItemFocus != null && isInit == false) {
-                    _calcCardLocation(
-                      pixel: scrollInfo.metrics.pixels,
-                      itemSize: widget.itemSize,
-                    );
+                  if (widget.updateOnScroll == true) {
+                    // dont snap until after first drag
+                    if (isInit) {
+                      return true;
+                    }
+
+                    if (widget.onItemFocus != null && isInit == false) {
+                      _calcCardLocation(
+                        pixel: scrollInfo.metrics.pixels,
+                        itemSize: widget.itemSize,
+                      );
+                    }
                   }
                 }
                 return true;

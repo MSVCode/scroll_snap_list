@@ -1,3 +1,6 @@
+## [0.4.0]
+- Added dynamic item size feature
+
 ## [0.3.1]
 - Fixed `animateTo` incorrectly removes user-scroll event
 

@@ -11,9 +11,9 @@ You can use this widget to achieve:
 - Show daily entry for Health App and shows its detail directly below the list (reduce number of click)
 - Scrollable InputSelect, like datetime picker in cupertino
 
-|![Jumbotron List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/jumbotron_list.gif)|![Horizontal List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/horizontal_list.gif)|![Vertical List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/vertical_list.gif)|
-|-----|-----|-----|
-|Horizontal Jumbotron List|Horizontal List with infinite-loading|Vertical list with InkWell ListItems|
+|![Jumbotron List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/jumbotron_list.gif)|![Horizontal List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/horizontal_list.gif)|![Vertical List](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/vertical_list.gif)|![Dynamic Size](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/dynamic_size.gif)|![Custom Dynamic Size](https://raw.githubusercontent.com/MSVCode/scroll_snap_list/master/readme_data/custom_dynamic_size.gif)|
+|-----|-----|-----|-----|-----|
+|Horizontal Jumbotron List|Horizontal List with infinite-loading|Vertical list with InkWell ListItems|Horizontal with dynamic item size|Horizontal with custom dynamic item size|
 
 ## Getting Started
 In your flutter project `pubspec.yaml` add the dependency:
@@ -163,6 +163,42 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
 }
 ```
 
+### Usage with dynamic item size
+This feature is added since version `0.4.0`.
+
+We can customize item size with respect to distance between item and center of `ScrollSnapList`.
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return MaterialApp(
+    title: 'Horizontal List Demo',
+    home: Scaffold(
+      appBar: AppBar(
+        title: Text("Horizontal List"),
+      ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ScrollSnapList(
+                onItemFocus: _onItemFocus,
+                itemSize: 150,
+                itemBuilder: _buildListItem,
+                itemCount: data.length,
+                dynamicItemSize: true,
+                // dynamicSizeEquation: customEquation, //optional
+              ),
+            ),
+            _buildItemDetail(),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+```
+
 ## Important parameters and explanation
 |Parameter|Explanation|
 |-----|-----|
@@ -182,6 +218,8 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
 |initialIndex|Optional initial position which will not snap until after the first drag|
 |scrollDirection|ListView's `scrollDirection`|
 |listController|External `ScrollController`|
+|dynamicItemSize|Scale item's size depending on distance to center|
+|dynamicSizeEquation|Custom equation to determine dynamic item scaling calculation|
 
 
 ## Other Notice
@@ -231,5 +269,5 @@ Widget _buildListItem(BuildContext context, int index) {
 Full example for this part can be found in `example/vertical_list.dart`.
 
 # About
-Created by Vincent Utomo (MSVCode)
+Created by Vincent (MSVCode)
 Email: msvcode@gmail.com
