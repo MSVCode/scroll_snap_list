@@ -20,7 +20,7 @@ In your flutter project `pubspec.yaml` add the dependency:
 ```yaml
 dependencies:
   ...
-  scroll_snap_list: ^4.0
+  scroll_snap_list: ^0.4
 ```
 
 ## Usage example
