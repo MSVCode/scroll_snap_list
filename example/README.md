@@ -9,3 +9,9 @@ Horizontal right to left list with simulated "loading from DB" data. Often used 
 
 ## Vertical List
 Simple InputSelect UI. Similar to Cupertino's InputSelect.
+
+## Dynamic Horizontal
+Horizontal list with dynamic (calculated) size.
+
+## Tab With Horizontal
+Demo on how to use `PageStorageKey` with `ScrollSnapList`.

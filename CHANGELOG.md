@@ -1,3 +1,7 @@
+## [0.4.1]
+- Added way to pass key to child ListView of ScrollSnapList
+- Added demo on how to use `PageStorageKey` with ScrollSnapList to preserve scroll location
+
 ## [0.4.0]
 - Added dynamic item size feature
 

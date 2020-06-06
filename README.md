@@ -20,7 +20,7 @@ In your flutter project `pubspec.yaml` add the dependency:
 ```yaml
 dependencies:
   ...
-  scroll_snap_list: ^0.4
+  scroll_snap_list: ^[version]
 ```
 
 ## Usage example
@@ -202,6 +202,8 @@ Widget build(BuildContext context) {
 ## Important parameters and explanation
 |Parameter|Explanation|
 |-----|-----|
+|key|Key for `ScrollSnapList`, used to call `ScrollSnapListState`|
+|listViewKey|Key for `ListView` inside `ScrollSnapListState`, often used to preserve scroll location|
 |itemBuilder|Same as ListView's itemBuilder|
 |curve|Animation curve when `snapping`|
 |duration|Animation duration|

@@ -51,6 +51,9 @@ class ScrollSnapList extends StatefulWidget {
   ///Global key that's used to call `focusToItem` method to manually trigger focus event.
   final Key key;
 
+  ///Global key that passed to child ListView. Can be used for PageStorageKey
+  final Key listViewKey;
+
   ///Callback function when list snaps/focuses to an item
   final void Function(int) onItemFocus;
 
@@ -101,6 +104,7 @@ class ScrollSnapList extends StatefulWidget {
     this.itemCount,
     @required this.itemSize,
     this.key,
+    this.listViewKey,
     this.margin,
     @required this.onItemFocus,
     this.onReachEnd,
@@ -139,9 +143,11 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
     ///After initial jump, set isInit to false
     Future.delayed(Duration(milliseconds: 10), () {
-      setState(() {
-        isInit = false;
-      });
+      if (this.mounted){
+        setState(() {
+          isInit = false;
+        });
+      }
     });
   }
 
@@ -300,6 +306,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                 return true;
               },
               child: ListView.builder(
+                key: widget.listViewKey,
                 controller: widget.listController,
                 padding: widget.scrollDirection == Axis.horizontal
                     ? EdgeInsets.symmetric(horizontal: _listPadding)
@@ -310,6 +317,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                 scrollDirection: widget.scrollDirection,
                 itemBuilder: _buildListItem,
                 itemCount: widget.itemCount,
+
               ),
             ),
           );
