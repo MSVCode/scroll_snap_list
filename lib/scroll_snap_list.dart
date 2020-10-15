@@ -92,6 +92,9 @@ class ScrollSnapList extends StatefulWidget {
   ///Need to set `dynamicItemSize` to `true`
   final double Function(double distance) dynamicSizeEquation;
 
+  ///Custom Opacity of items off center
+  final double dynamicItemOpacity;
+
   ScrollSnapList({
     this.background,
     @required this.itemBuilder,
@@ -114,7 +117,8 @@ class ScrollSnapList extends StatefulWidget {
     this.initialIndex,
     this.scrollDirection = Axis.horizontal,
     this.dynamicItemSize = false,
-    this.dynamicSizeEquation
+    this.dynamicSizeEquation,
+    this.dynamicItemOpacity,
   })  : listController = listController ?? ScrollController(),
         super(key: key);
 
@@ -143,7 +147,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
     ///After initial jump, set isInit to false
     Future.delayed(Duration(milliseconds: 10), () {
-      if (this.mounted){
+      if (this.mounted) {
         setState(() {
           isInit = false;
         });
@@ -163,29 +167,45 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   }
 
   ///Calculate scale transformation for dynamic item size
-  double calculateScale(int index){
+  double calculateScale(int index) {
     //scroll-pixel position for index to be at the center of ScrollSnapList
-    double intendedPixel = index*widget.itemSize;
-    double difference = intendedPixel-currentPixel;
+    double intendedPixel = index * widget.itemSize;
+    double difference = intendedPixel - currentPixel;
 
-    if (widget.dynamicSizeEquation!=null){
+    if (widget.dynamicSizeEquation != null) {
       //force to be >= 0
       double scale = widget.dynamicSizeEquation(difference);
-      return scale<0?0:scale;
+      return scale < 0 ? 0 : scale;
     }
 
     //default equation
-    return 1-min(difference.abs()/500, 0.4);
+    return 1 - min(difference.abs() / 500, 0.4);
+  }
+
+  ///Calculate opacity transformation for dynamic item opacity
+  double calculateOpacity(int index) {
+    //scroll-pixel position for index to be at the center of ScrollSnapList
+    double intendedPixel = index * widget.itemSize;
+    double difference = intendedPixel - currentPixel;
+
+    return (difference == 0) ? 1.0 : widget.dynamicItemOpacity ?? 1.0;
   }
 
   Widget _buildListItem(BuildContext context, int index) {
     Widget child;
-    if (widget.dynamicItemSize){
-      child = Transform.scale(scale: calculateScale(index), child: widget.itemBuilder(context, index),);
+    if (widget.dynamicItemSize) {
+      child = Transform.scale(
+        scale: calculateScale(index),
+        child: widget.itemBuilder(context, index),
+      );
     } else {
       child = widget.itemBuilder(context, index);
     }
-    
+
+    if (widget.dynamicItemOpacity != null) {
+      child = Opacity(child: child, opacity: calculateOpacity(index));
+    }
+
     if (widget.focusOnItemTap)
       return GestureDetector(
         onTap: () => focusToItem(index),
@@ -283,9 +303,9 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                   }
                 } else if (scrollInfo is ScrollUpdateNotification) {
                   //save pixel position for scale-effect
-                  if (widget.dynamicItemSize){
+                  if (widget.dynamicItemSize) {
                     setState(() {
-                      currentPixel = scrollInfo.metrics.pixels;  
+                      currentPixel = scrollInfo.metrics.pixels;
                     });
                   }
 
@@ -317,7 +337,6 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                 scrollDirection: widget.scrollDirection,
                 itemBuilder: _buildListItem,
                 itemCount: widget.itemCount,
-
               ),
             ),
           );
