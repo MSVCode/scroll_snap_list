@@ -222,6 +222,7 @@ Widget build(BuildContext context) {
 |listController|External `ScrollController`|
 |dynamicItemSize|Scale item's size depending on distance to center|
 |dynamicSizeEquation|Custom equation to determine dynamic item scaling calculation|
+|dynamicItemOpacity|Custom opacity for offset item (single value)|
 
 
 ## Other Notice

@@ -1,3 +1,9 @@
+## [0.5.1]
+- Updated readme
+
+## [0.5.0]
+- Added dynamic item opacity (thanks @granoeste)
+
 ## [0.4.1]
 - Added way to pass key to child ListView of ScrollSnapList
 - Added demo on how to use `PageStorageKey` with ScrollSnapList to preserve scroll location
@@ -9,7 +15,7 @@
 - Fixed `animateTo` incorrectly removes user-scroll event
 
 ## [0.3.0]
-- Added updateOnScroll and initial value (value before first snap) (Thanks @hawkinsjb1 !)
+- Added updateOnScroll and initial value (value before first snap) (thanks @hawkinsjb1)
 - Added checking to avoid multiple onItemFocus call for the same index
 - Updated method to handle isInit (delayed instead of one trigger)
 
