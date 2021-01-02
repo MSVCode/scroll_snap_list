@@ -223,6 +223,7 @@ Widget build(BuildContext context) {
 |dynamicItemSize|Scale item's size depending on distance to center|
 |dynamicSizeEquation|Custom equation to determine dynamic item scaling calculation|
 |dynamicItemOpacity|Custom opacity for offset item (single value)|
+|selectedItemAnchor|Anchor location for selected item in the list (Start, Middle, End)|
 
 
 ## Other Notice

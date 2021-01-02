@@ -4,6 +4,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+///Anchor location for selected item in the list
+enum SelectedItemAnchor { START, MIDDLE, END }
+
 ///A ListView widget that able to "snap" or focus to an item whenever user scrolls.
 ///
 ///Allows unrestricted scroll speed. Snap/focus event done on every `ScrollEndNotification`.
@@ -95,31 +98,35 @@ class ScrollSnapList extends StatefulWidget {
   ///Custom Opacity of items off center
   final double dynamicItemOpacity;
 
-  ScrollSnapList({
-    this.background,
-    @required this.itemBuilder,
-    ScrollController listController,
-    this.curve = Curves.ease,
-    this.duration = 500,
-    this.endOfListTolerance,
-    this.focusOnItemTap = true,
-    this.focusToItem,
-    this.itemCount,
-    @required this.itemSize,
-    this.key,
-    this.listViewKey,
-    this.margin,
-    @required this.onItemFocus,
-    this.onReachEnd,
-    this.padding,
-    this.reverse = false,
-    this.updateOnScroll,
-    this.initialIndex,
-    this.scrollDirection = Axis.horizontal,
-    this.dynamicItemSize = false,
-    this.dynamicSizeEquation,
-    this.dynamicItemOpacity,
-  })  : listController = listController ?? ScrollController(),
+  ///Anchor location for selected item in the list
+  final SelectedItemAnchor selectedItemAnchor;
+
+  ScrollSnapList(
+      {this.background,
+      @required this.itemBuilder,
+      ScrollController listController,
+      this.curve = Curves.ease,
+      this.duration = 500,
+      this.endOfListTolerance,
+      this.focusOnItemTap = true,
+      this.focusToItem,
+      this.itemCount,
+      @required this.itemSize,
+      this.key,
+      this.listViewKey,
+      this.margin,
+      @required this.onItemFocus,
+      this.onReachEnd,
+      this.padding,
+      this.reverse = false,
+      this.updateOnScroll,
+      this.initialIndex,
+      this.scrollDirection = Axis.horizontal,
+      this.dynamicItemSize = false,
+      this.dynamicSizeEquation,
+      this.dynamicItemOpacity,
+      this.selectedItemAnchor = SelectedItemAnchor.MIDDLE})
+      : listController = listController ?? ScrollController(),
         super(key: key);
 
   @override
@@ -268,11 +275,28 @@ class ScrollSnapListState extends State<ScrollSnapList> {
       margin: widget.margin,
       child: LayoutBuilder(
         builder: (BuildContext ctx, BoxConstraints constraint) {
-          double _listPadding = (widget.scrollDirection == Axis.horizontal
+          double _listPadding = 0;
+
+          //determine anchor
+          switch (widget.selectedItemAnchor) {
+            case SelectedItemAnchor.START:
+              _listPadding = 0;
+              break;
+            case SelectedItemAnchor.MIDDLE:
+              _listPadding = (widget.scrollDirection == Axis.horizontal
+                          ? constraint.maxWidth
+                          : constraint.maxHeight) /
+                      2 -
+                  widget.itemSize / 2;
+              break;
+            case SelectedItemAnchor.END:
+              _listPadding = (widget.scrollDirection == Axis.horizontal
                       ? constraint.maxWidth
-                      : constraint.maxHeight) /
-                  2 -
-              widget.itemSize / 2;
+                      : constraint.maxHeight) -
+                  widget.itemSize;
+              break;
+          }
+
           return GestureDetector(
             //by catching onTapDown gesture, it's possible to keep animateTo from removing user's scroll listener
             onTapDown: (_) {},
@@ -303,7 +327,8 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                   }
                 } else if (scrollInfo is ScrollUpdateNotification) {
                   //save pixel position for scale-effect
-                  if (widget.dynamicItemSize) {
+                  if (widget.dynamicItemSize ||
+                      widget.dynamicItemOpacity != null) {
                     setState(() {
                       currentPixel = scrollInfo.metrics.pixels;
                     });
