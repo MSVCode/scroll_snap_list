@@ -53,7 +53,7 @@ class _VerticalListDemoState extends State<VerticalListDemo> {
             print("Do anything here");
 
             //trigger focus manually
-            sslKey.currentState.focusToItem(index);
+            sslKey.currentState!.focusToItem(index);
           },
         ),
       ),

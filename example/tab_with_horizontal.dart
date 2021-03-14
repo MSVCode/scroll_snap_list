@@ -47,7 +47,7 @@ class TabWithHorizontalListDemo extends StatelessWidget {
 }
 
 class HorizontalListJumbo extends StatefulWidget {
-  final Key key;
+  final Key? key;
 
   HorizontalListJumbo({this.key});
   @override
@@ -95,7 +95,7 @@ class _HorizontalListJumboState extends State<HorizontalListJumbo> {
         color: Colors.lightBlueAccent,
         child: InkWell(
           onTap: () {
-            sslKey.currentState.focusToItem(index);
+            sslKey.currentState!.focusToItem(index);
           },
           child: Text("Child index $index"),
         ),

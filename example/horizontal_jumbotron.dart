@@ -51,7 +51,7 @@ class _HorizontalListJumboDemoState extends State<HorizontalListJumboDemo> {
         color: Colors.lightBlueAccent,
         child: InkWell(
           onTap: (){
-            sslKey.currentState.focusToItem(index);
+            sslKey.currentState!.focusToItem(index);
           },
           child: Text("Child index $index"),
         ),

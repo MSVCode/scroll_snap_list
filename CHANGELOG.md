@@ -1,3 +1,7 @@
+## [0.7.0]
+- Updated for Flutter 2
+- Added null-safety
+
 ## [0.6.0]
 - Added way to anchor selected item at the start & end of the list
 - Bugfix dynamic item opacity not working if dynamicItemSize is false

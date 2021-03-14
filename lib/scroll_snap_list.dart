@@ -14,7 +14,7 @@ enum SelectedItemAnchor { START, MIDDLE, END }
 ///Contains `ScrollNotification` widget, so might be incompatible with other scroll notification.
 class ScrollSnapList extends StatefulWidget {
   ///List background
-  final Color background;
+  final Color? background;
 
   ///Widget builder.
   final Widget Function(BuildContext, int) itemBuilder;
@@ -27,19 +27,19 @@ class ScrollSnapList extends StatefulWidget {
 
   ///Pixel tolerance to trigger onReachEnd.
   ///Default is itemSize/2
-  final double endOfListTolerance;
+  final double? endOfListTolerance;
 
   ///Focus to an item when user tap on it. Inactive if the list-item have its own onTap detector (use state-key to help focusing instead).
   final bool focusOnItemTap;
 
   ///Method to manually trigger focus to an item. Call with help of `GlobalKey<ScrollSnapListState>`.
-  final void Function(int) focusToItem;
+  final void Function(int)? focusToItem;
 
   ///Container's margin
-  final EdgeInsetsGeometry margin;
+  final EdgeInsetsGeometry? margin;
 
   ///Number of item in this list
-  final int itemCount;
+  final int? itemCount;
 
   ///Composed of the size of each item + its margin/padding.
   ///Size used is width if `scrollDirection` is `Axis.horizontal`, height if `Axis.vertical`.
@@ -52,10 +52,10 @@ class ScrollSnapList extends StatefulWidget {
   final double itemSize;
 
   ///Global key that's used to call `focusToItem` method to manually trigger focus event.
-  final Key key;
+  final Key? key;
 
   ///Global key that passed to child ListView. Can be used for PageStorageKey
-  final Key listViewKey;
+  final Key? listViewKey;
 
   ///Callback function when list snaps/focuses to an item
   final void Function(int) onItemFocus;
@@ -63,19 +63,19 @@ class ScrollSnapList extends StatefulWidget {
   ///Callback function when user reach end of list.
   ///
   ///Can be used to load more data from database.
-  final Function onReachEnd;
+  final Function? onReachEnd;
 
   ///Container's padding
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   ///Reverse scrollDirection
   final bool reverse;
 
   ///Calls onItemFocus (if it exists) when ScrollUpdateNotification fires
-  final bool updateOnScroll;
+  final bool? updateOnScroll;
 
   ///An optional initial position which will not snap until after the first drag
-  final double initialIndex;
+  final double? initialIndex;
 
   ///ListView's scrollDirection
   final Axis scrollDirection;
@@ -93,29 +93,29 @@ class ScrollSnapList extends StatefulWidget {
   ///Output value is scale size (must be >=0, 1 is normal-size)
   ///
   ///Need to set `dynamicItemSize` to `true`
-  final double Function(double distance) dynamicSizeEquation;
+  final double Function(double distance)? dynamicSizeEquation;
 
   ///Custom Opacity of items off center
-  final double dynamicItemOpacity;
+  final double? dynamicItemOpacity;
 
   ///Anchor location for selected item in the list
   final SelectedItemAnchor selectedItemAnchor;
 
   ScrollSnapList(
       {this.background,
-      @required this.itemBuilder,
-      ScrollController listController,
+      required this.itemBuilder,
+      ScrollController? listController,
       this.curve = Curves.ease,
       this.duration = 500,
       this.endOfListTolerance,
       this.focusOnItemTap = true,
       this.focusToItem,
       this.itemCount,
-      @required this.itemSize,
+      required this.itemSize,
       this.key,
       this.listViewKey,
       this.margin,
-      @required this.onItemFocus,
+      required this.onItemFocus,
       this.onReachEnd,
       this.padding,
       this.reverse = false,
@@ -143,7 +143,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (widget.initialIndex != null) {
         //set list's initial position
         focusToInitialPosition();
@@ -181,7 +181,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
     if (widget.dynamicSizeEquation != null) {
       //force to be >= 0
-      double scale = widget.dynamicSizeEquation(difference);
+      double scale = widget.dynamicSizeEquation!(difference);
       return scale < 0 ? 0 : scale;
     }
 
@@ -226,16 +226,16 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   ///
   ///Then trigger `onItemFocus`
   double _calcCardLocation(
-      {double pixel, @required double itemSize, int index}) {
+      {double? pixel, required double itemSize, int? index}) {
     //current pixel: pixel
     //listPadding is not considered as moving pixel by scroll (0.0 is after padding)
     //substracted by itemSize/2 (to center the item)
     //divided by pixels taken by each item
     int cardIndex =
-        index != null ? index : ((pixel - itemSize / 2) / itemSize).ceil();
+        index != null ? index : ((pixel! - itemSize / 2) / itemSize).ceil();
 
     //trigger onItemFocus
-    if (widget.onItemFocus != null && cardIndex != previousIndex) {
+    if (cardIndex != previousIndex) {
       previousIndex = cardIndex;
       widget.onItemFocus(cardIndex);
     }
@@ -254,12 +254,12 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
   ///Determine location if initialIndex is set
   void focusToInitialPosition() {
-    widget.listController.jumpTo((widget.initialIndex * widget.itemSize));
+    widget.listController.jumpTo((widget.initialIndex! * widget.itemSize));
   }
 
   ///Trigger callback on reach end-of-list
   void _onReachEnd() {
-    if (widget.onReachEnd != null) widget.onReachEnd();
+    if (widget.onReachEnd != null) widget.onReachEnd!();
   }
 
   @override
@@ -340,7 +340,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                       return true;
                     }
 
-                    if (widget.onItemFocus != null && isInit == false) {
+                    if (isInit == false) {
                       _calcCardLocation(
                         pixel: scrollInfo.metrics.pixels,
                         itemSize: widget.itemSize,

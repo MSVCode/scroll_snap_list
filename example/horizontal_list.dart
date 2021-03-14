@@ -105,7 +105,7 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  RaisedButton(
+                  ElevatedButton(
                     child: Text("Add Item"),
                     onPressed: () {
                       setState(() {
@@ -113,7 +113,7 @@ class _HorizontalListDemoState extends State<HorizontalListDemo> {
                       });
                     },
                   ),
-                  RaisedButton(
+                  ElevatedButton(
                     child: Text("Remove Item"),
                     onPressed: () {
                       int index = data.length > 1
