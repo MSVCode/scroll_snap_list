@@ -100,7 +100,13 @@ class ScrollSnapList extends StatefulWidget {
 
   ///Anchor location for selected item in the list
   final SelectedItemAnchor selectedItemAnchor;
-
+  
+  /// {@macro flutter.widgets.scroll_view.shrinkWrap}
+  final bool shrinkWrap;
+  
+  /// {@macro flutter.widgets.scroll_view.physics}
+  final ScrollPhysics? scrollPhysics;
+  
   ScrollSnapList(
       {this.background,
       required this.itemBuilder,
@@ -125,7 +131,10 @@ class ScrollSnapList extends StatefulWidget {
       this.dynamicItemSize = false,
       this.dynamicSizeEquation,
       this.dynamicItemOpacity,
-      this.selectedItemAnchor = SelectedItemAnchor.MIDDLE})
+      this.selectedItemAnchor = SelectedItemAnchor.MIDDLE,
+      this.shrinkWrap = false,
+      this.scrollPhysics,
+      })
       : listController = listController ?? ScrollController(),
         super(key: key);
 
@@ -362,6 +371,8 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                 scrollDirection: widget.scrollDirection,
                 itemBuilder: _buildListItem,
                 itemCount: widget.itemCount,
+                shrinkWrap: widget.shrinkWrap,
+                physics: widget.scrollPhysics,
               ),
             ),
           );
