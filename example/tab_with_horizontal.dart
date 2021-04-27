@@ -15,11 +15,7 @@ class TabWithHorizontalListDemo extends StatelessWidget {
       key: PageStorageKey<String>("Tab 3"),
     )
   ];
-  final List<Widget> _tabMenu = [
-    Tab(child: Text('Tab 1')),
-    Tab(child: Text('Tab 2')),
-    Tab(child: Text('Tab 3'))
-  ];
+  final List<Widget> _tabMenu = [Tab(child: Text('Tab 1')), Tab(child: Text('Tab 2')), Tab(child: Text('Tab 3'))];
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +108,7 @@ class _HorizontalListJumboState extends State<HorizontalListJumbo> {
             child: ScrollSnapList(
               margin: EdgeInsets.symmetric(vertical: 10),
               onItemFocus: _onItemFocus,
-              itemSize: 360,
+              itemExtent: 360,
               itemBuilder: _buildListItem,
               itemCount: data.length,
               key: sslKey,

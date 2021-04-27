@@ -30,12 +30,12 @@ class _DynamicHorizontalDemoState extends State<DynamicHorizontalDemo> {
     });
   }
 
-
   Widget _buildItemDetail() {
-    if (_focusedIndex<0) return Container(
-      height: 250,
-      child: Text("Nothing selected"),
-    );
+    if (_focusedIndex < 0)
+      return Container(
+        height: 250,
+        child: Text("Nothing selected"),
+      );
 
     if (data.length > _focusedIndex)
       return Container(
@@ -51,7 +51,9 @@ class _DynamicHorizontalDemoState extends State<DynamicHorizontalDemo> {
 
   Widget _buildListItem(BuildContext context, int index) {
     if (index == data.length)
-      return Center(child: CircularProgressIndicator(),);
+      return Center(
+        child: CircularProgressIndicator(),
+      );
 
     //horizontal
     return Container(
@@ -71,9 +73,9 @@ class _DynamicHorizontalDemoState extends State<DynamicHorizontalDemo> {
   }
 
   ///Override default dynamicItemSize calculation
-  double customEquation(double distance){
+  double customEquation(double distance) {
     // return 1-min(distance.abs()/500, 0.2);
-    return 1-(distance/1000);
+    return 1 - (distance / 1000);
   }
 
   @override
@@ -90,7 +92,7 @@ class _DynamicHorizontalDemoState extends State<DynamicHorizontalDemo> {
               Expanded(
                 child: ScrollSnapList(
                   onItemFocus: _onItemFocus,
-                  itemSize: 150,
+                  itemExtent: 150,
                   itemBuilder: _buildListItem,
                   itemCount: data.length,
                   dynamicItemSize: true,

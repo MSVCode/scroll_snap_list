@@ -81,7 +81,7 @@ class _VerticalListDemoState extends State<VerticalListDemo> {
                   height: 300,
                   child: ScrollSnapList(
                     onItemFocus: _onItemFocus,
-                    itemSize: 50,
+                    itemExtent: 50,
                     // selectedItemAnchor: SelectedItemAnchor.START, //to change item anchor uncomment this line
                     // dynamicItemOpacity: 0.3, //to set unselected item opacity uncomment this line
                     itemBuilder: _buildListItem,
