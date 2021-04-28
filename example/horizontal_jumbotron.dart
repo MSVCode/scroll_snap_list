@@ -50,7 +50,7 @@ class _HorizontalListJumboDemoState extends State<HorizontalListJumboDemo> {
       child: Material(
         color: Colors.lightBlueAccent,
         child: InkWell(
-          onTap: (){
+          onTap: () {
             sslKey.currentState!.focusToItem(index);
           },
           child: Text("Child index $index"),
@@ -74,7 +74,7 @@ class _HorizontalListJumboDemoState extends State<HorizontalListJumboDemo> {
                 child: ScrollSnapList(
                   margin: EdgeInsets.symmetric(vertical: 10),
                   onItemFocus: _onItemFocus,
-                  itemSize: 360,
+                  itemExtent: 360,
                   itemBuilder: _buildListItem,
                   itemCount: data.length,
                   key: sslKey,
