@@ -1,3 +1,7 @@
+## [0.8.0]
+- Added shrinkWrap and scrollPhysics param for internal ListView (thanks @Svet-00)
+- Added clipBehavior and keyboardDismissBehavior param for internal ListView
+
 ## [0.7.0]
 - Updated for Flutter 2
 - Added null-safety

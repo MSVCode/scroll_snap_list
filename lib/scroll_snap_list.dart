@@ -100,13 +100,19 @@ class ScrollSnapList extends StatefulWidget {
 
   ///Anchor location for selected item in the list
   final SelectedItemAnchor selectedItemAnchor;
-  
+
   /// {@macro flutter.widgets.scroll_view.shrinkWrap}
   final bool shrinkWrap;
-  
+
   /// {@macro flutter.widgets.scroll_view.physics}
   final ScrollPhysics? scrollPhysics;
-  
+
+  ///{@macro flutter.material.Material.clipBehavior}
+  final Clip clipBehavior;
+
+  ///{@macro flutter.widgets.scroll_view.keyboardDismissBehavior}
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+
   ScrollSnapList(
       {this.background,
       required this.itemBuilder,
@@ -134,7 +140,8 @@ class ScrollSnapList extends StatefulWidget {
       this.selectedItemAnchor = SelectedItemAnchor.MIDDLE,
       this.shrinkWrap = false,
       this.scrollPhysics,
-      })
+      this.clipBehavior = Clip.hardEdge,
+      this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual})
       : listController = listController ?? ScrollController(),
         super(key: key);
 
@@ -362,6 +369,8 @@ class ScrollSnapListState extends State<ScrollSnapList> {
               child: ListView.builder(
                 key: widget.listViewKey,
                 controller: widget.listController,
+                clipBehavior: widget.clipBehavior,
+                keyboardDismissBehavior: widget.keyboardDismissBehavior,
                 padding: widget.scrollDirection == Axis.horizontal
                     ? EdgeInsets.symmetric(horizontal: _listPadding)
                     : EdgeInsets.symmetric(
