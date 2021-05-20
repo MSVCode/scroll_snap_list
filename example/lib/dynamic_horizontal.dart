@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 
-void main() => runApp(DynamicHorizontalDemo());
-
 class DynamicHorizontalDemo extends StatefulWidget {
   @override
   _DynamicHorizontalDemoState createState() => _DynamicHorizontalDemoState();
@@ -92,6 +90,7 @@ class _DynamicHorizontalDemoState extends State<DynamicHorizontalDemo> {
               Expanded(
                 child: ScrollSnapList(
                   onItemFocus: _onItemFocus,
+                  selectedItemAnchor: SelectedItemAnchor.start,
                   itemExtent: 150,
                   itemBuilder: _buildListItem,
                   itemCount: data.length,

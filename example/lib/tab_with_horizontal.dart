@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 
-void main() => runApp(TabWithHorizontalListDemo());
-
 class TabWithHorizontalListDemo extends StatelessWidget {
   final List<Widget> _tabScreen = [
     HorizontalListJumbo(
@@ -53,7 +51,7 @@ class HorizontalListJumbo extends StatefulWidget {
 class _HorizontalListJumboState extends State<HorizontalListJumbo> {
   List<int> data = [];
   int _focusedIndex = 0;
-  GlobalKey<ScrollSnapListState> sslKey = GlobalKey();
+  final controller = SnapScrollListController(itemExtent: 360);
 
   @override
   void initState() {
@@ -91,7 +89,7 @@ class _HorizontalListJumboState extends State<HorizontalListJumbo> {
         color: Colors.lightBlueAccent,
         child: InkWell(
           onTap: () {
-            sslKey.currentState!.focusToItem(index);
+            controller.animateToIndex(index);
           },
           child: Text("Child index $index"),
         ),
@@ -106,12 +104,12 @@ class _HorizontalListJumboState extends State<HorizontalListJumbo> {
         children: <Widget>[
           Expanded(
             child: ScrollSnapList(
+              scrollController: controller,
               margin: EdgeInsets.symmetric(vertical: 10),
               onItemFocus: _onItemFocus,
-              itemExtent: 360,
+              selectedItemAnchor: SelectedItemAnchor.start,
               itemBuilder: _buildListItem,
               itemCount: data.length,
-              key: sslKey,
               listViewKey: widget.key,
             ),
           ),
@@ -119,5 +117,11 @@ class _HorizontalListJumboState extends State<HorizontalListJumbo> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

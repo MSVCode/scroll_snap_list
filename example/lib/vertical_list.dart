@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 
-void main() => runApp(VerticalListDemo());
-
 class VerticalListDemo extends StatefulWidget {
   @override
   _VerticalListDemoState createState() => _VerticalListDemoState();
@@ -11,7 +9,7 @@ class VerticalListDemo extends StatefulWidget {
 class _VerticalListDemoState extends State<VerticalListDemo> {
   List<int> data = [];
   int _focusedIndex = 0;
-  GlobalKey<ScrollSnapListState> sslKey = GlobalKey();
+  final controller = SnapScrollListController(itemExtent: 50);
 
   @override
   void initState() {
@@ -53,7 +51,7 @@ class _VerticalListDemoState extends State<VerticalListDemo> {
             print("Do anything here");
 
             //trigger focus manually
-            sslKey.currentState!.focusToItem(index);
+            controller.animateToIndex(index);
           },
         ),
       ),
@@ -80,13 +78,12 @@ class _VerticalListDemoState extends State<VerticalListDemo> {
                   width: 250,
                   height: 300,
                   child: ScrollSnapList(
+                    scrollController: controller,
                     onItemFocus: _onItemFocus,
-                    itemExtent: 50,
-                    // selectedItemAnchor: SelectedItemAnchor.START, //to change item anchor uncomment this line
+                    selectedItemAnchor: SelectedItemAnchor.start,
                     // dynamicItemOpacity: 0.3, //to set unselected item opacity uncomment this line
                     itemBuilder: _buildListItem,
                     itemCount: data.length,
-                    key: sslKey,
                     scrollDirection: Axis.vertical,
                   ),
                 ),
@@ -100,5 +97,11 @@ class _VerticalListDemoState extends State<VerticalListDemo> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 
-void main() => runApp(HorizontalListJumboDemo());
-
 class HorizontalListJumboDemo extends StatefulWidget {
   @override
   _HorizontalListJumboDemoState createState() => _HorizontalListJumboDemoState();
@@ -13,7 +11,7 @@ class HorizontalListJumboDemo extends StatefulWidget {
 class _HorizontalListJumboDemoState extends State<HorizontalListJumboDemo> {
   List<int> data = [];
   int _focusedIndex = 0;
-  GlobalKey<ScrollSnapListState> sslKey = GlobalKey();
+  final controller = SnapScrollListController(itemExtent: 360);
 
   @override
   void initState() {
@@ -51,7 +49,7 @@ class _HorizontalListJumboDemoState extends State<HorizontalListJumboDemo> {
         color: Colors.lightBlueAccent,
         child: InkWell(
           onTap: () {
-            sslKey.currentState!.focusToItem(index);
+            controller.animateToIndex(index);
           },
           child: Text("Child index $index"),
         ),
@@ -61,30 +59,34 @@ class _HorizontalListJumboDemoState extends State<HorizontalListJumboDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Jumbo List Demo',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Jumbo List"),
-        ),
-        body: Container(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: ScrollSnapList(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  onItemFocus: _onItemFocus,
-                  itemExtent: 360,
-                  itemBuilder: _buildListItem,
-                  itemCount: data.length,
-                  key: sslKey,
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Jumbo List"),
+      ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ScrollSnapList(
+                scrollController: controller,
+                snapOnScroll: true,
+                selectedItemAnchor: SelectedItemAnchor.middle,
+                margin: EdgeInsets.symmetric(vertical: 10),
+                onItemFocus: _onItemFocus,
+                itemBuilder: _buildListItem,
+                itemCount: data.length,
               ),
-              _buildItemDetail(),
-            ],
-          ),
+            ),
+            _buildItemDetail(),
+          ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }
