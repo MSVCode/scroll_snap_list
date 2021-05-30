@@ -113,35 +113,39 @@ class ScrollSnapList extends StatefulWidget {
   ///{@macro flutter.widgets.scroll_view.keyboardDismissBehavior}
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
-  ScrollSnapList(
-      {this.background,
-      required this.itemBuilder,
-      ScrollController? listController,
-      this.curve = Curves.ease,
-      this.duration = 500,
-      this.endOfListTolerance,
-      this.focusOnItemTap = true,
-      this.focusToItem,
-      this.itemCount,
-      required this.itemSize,
-      this.key,
-      this.listViewKey,
-      this.margin,
-      required this.onItemFocus,
-      this.onReachEnd,
-      this.padding,
-      this.reverse = false,
-      this.updateOnScroll,
-      this.initialIndex,
-      this.scrollDirection = Axis.horizontal,
-      this.dynamicItemSize = false,
-      this.dynamicSizeEquation,
-      this.dynamicItemOpacity,
-      this.selectedItemAnchor = SelectedItemAnchor.MIDDLE,
-      this.shrinkWrap = false,
-      this.scrollPhysics,
-      this.clipBehavior = Clip.hardEdge,
-      this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual})
+  ///Allow scroll items on other directions scroll handled (e.g scoll items on
+  ///vertical scroll if Axis.horisontal set). Usefull if items also scrollable.
+  bool allowAnotherDirection;
+
+  ScrollSnapList({this.background,
+    required this.itemBuilder,
+    ScrollController? listController,
+    this.curve = Curves.ease,
+    this.allowAnotherDirection = true,
+    this.duration = 500,
+    this.endOfListTolerance,
+    this.focusOnItemTap = true,
+    this.focusToItem,
+    this.itemCount,
+    required this.itemSize,
+    this.key,
+    this.listViewKey,
+    this.margin,
+    required this.onItemFocus,
+    this.onReachEnd,
+    this.padding,
+    this.reverse = false,
+    this.updateOnScroll,
+    this.initialIndex,
+    this.scrollDirection = Axis.horizontal,
+    this.dynamicItemSize = false,
+    this.dynamicSizeEquation,
+    this.dynamicItemOpacity,
+    this.selectedItemAnchor = SelectedItemAnchor.MIDDLE,
+    this.shrinkWrap = false,
+    this.scrollPhysics,
+    this.clipBehavior = Clip.hardEdge,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual})
       : listController = listController ?? ScrollController(),
         super(key: key);
 
@@ -152,8 +156,10 @@ class ScrollSnapList extends StatefulWidget {
 class ScrollSnapListState extends State<ScrollSnapList> {
   //true if initialIndex exists and first drag hasn't occurred
   bool isInit = true;
+
   //to avoid multiple onItemFocus when using updateOnScroll
   int previousIndex = -1;
+
   //Current scroll-position in pixel
   double currentPixel = 0;
 
@@ -248,7 +254,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
     //substracted by itemSize/2 (to center the item)
     //divided by pixels taken by each item
     int cardIndex =
-        index != null ? index : ((pixel! - itemSize / 2) / itemSize).ceil();
+    index != null ? index : ((pixel! - itemSize / 2) / itemSize).ceil();
 
     //trigger onItemFocus
     if (cardIndex != previousIndex) {
@@ -264,7 +270,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   /// Will trigger scoll animation to focused item
   void focusToItem(int index) {
     double targetLoc =
-        _calcCardLocation(index: index, itemSize: widget.itemSize);
+    _calcCardLocation(index: index, itemSize: widget.itemSize);
     _animateScroll(targetLoc);
   }
 
@@ -300,15 +306,15 @@ class ScrollSnapListState extends State<ScrollSnapList> {
               break;
             case SelectedItemAnchor.MIDDLE:
               _listPadding = (widget.scrollDirection == Axis.horizontal
-                          ? constraint.maxWidth
-                          : constraint.maxHeight) /
-                      2 -
+                  ? constraint.maxWidth
+                  : constraint.maxHeight) /
+                  2 -
                   widget.itemSize / 2;
               break;
             case SelectedItemAnchor.END:
               _listPadding = (widget.scrollDirection == Axis.horizontal
-                      ? constraint.maxWidth
-                      : constraint.maxHeight) -
+                  ? constraint.maxWidth
+                  : constraint.maxHeight) -
                   widget.itemSize;
               break;
           }
@@ -318,6 +324,22 @@ class ScrollSnapListState extends State<ScrollSnapList> {
             onTapDown: (_) {},
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
+                if (!widget.allowAnotherDirection) {
+                  if (scrollInfo.metrics.axisDirection == AxisDirection.right ||
+                      scrollInfo.metrics.axisDirection == AxisDirection.left) {
+                    if (widget.scrollDirection != Axis.horizontal) {
+                      return false;
+                    };
+                  }
+
+                  if (scrollInfo.metrics.axisDirection == AxisDirection.up ||
+                      scrollInfo.metrics.axisDirection == AxisDirection.down) {
+                    if (widget.scrollDirection != Axis.vertical) {
+                      return false;
+                    };
+                  }
+                }
+
                 if (scrollInfo is ScrollEndNotification) {
                   // dont snap until after first drag
                   if (isInit) {
@@ -374,8 +396,8 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                 padding: widget.scrollDirection == Axis.horizontal
                     ? EdgeInsets.symmetric(horizontal: _listPadding)
                     : EdgeInsets.symmetric(
-                        vertical: _listPadding,
-                      ),
+                  vertical: _listPadding,
+                ),
                 reverse: widget.reverse,
                 scrollDirection: widget.scrollDirection,
                 itemBuilder: _buildListItem,
