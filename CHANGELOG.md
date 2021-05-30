@@ -1,3 +1,6 @@
+## [0.8.1]
+- Added param to fix unintended scroll notification when child is scrollable with different axis (thanks @j3su5cr1st)
+
 ## [0.8.0]
 - Added shrinkWrap and scrollPhysics param for internal ListView (thanks @Svet-00)
 - Added clipBehavior and keyboardDismissBehavior param for internal ListView

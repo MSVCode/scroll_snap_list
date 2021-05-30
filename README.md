@@ -224,6 +224,11 @@ Widget build(BuildContext context) {
 |dynamicSizeEquation|Custom equation to determine dynamic item scaling calculation|
 |dynamicItemOpacity|Custom opacity for offset item (single value)|
 |selectedItemAnchor|Anchor location for selected item in the list (Start, Middle, End)|
+|shrinkWrap|ListView's `shrinkWrap`|
+|scrollPhysics|ListView's `scrollPhysics`|
+|clipBehavior|ListView's `clipBehavior`|
+|keyboardDismissBehavior|ListView's `keyboardDismissBehavior`|
+|allowAnotherDirection|Allow List items to be scrolled using other direction|
 
 
 ## Other Notice
