@@ -39,7 +39,7 @@ class ScrollSnapList extends StatefulWidget {
   final EdgeInsetsGeometry? margin;
 
   ///Number of item in this list
-  final int? itemCount;
+  final int itemCount;
 
   ///Composed of the size of each item + its margin/padding.
   ///Size used is width if `scrollDirection` is `Axis.horizontal`, height if `Axis.vertical`.
@@ -127,7 +127,7 @@ class ScrollSnapList extends StatefulWidget {
       this.endOfListTolerance,
       this.focusOnItemTap = true,
       this.focusToItem,
-      this.itemCount,
+      required this.itemCount,
       required this.itemSize,
       this.key,
       this.listViewKey,
@@ -256,6 +256,13 @@ class ScrollSnapListState extends State<ScrollSnapList> {
     //divided by pixels taken by each item
     int cardIndex =
         index != null ? index : ((pixel! - itemSize / 2) / itemSize).ceil();
+
+    //Avoid index getting out of bounds
+    if (cardIndex < 0){
+      cardIndex = 0;
+    } else if (cardIndex > widget.itemCount -1){
+      cardIndex = widget.itemCount -1;
+    }
 
     //trigger onItemFocus
     if (cardIndex != previousIndex) {

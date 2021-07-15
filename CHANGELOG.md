@@ -1,3 +1,6 @@
+## [0.8.2]
+- Experimental fix for iOS over-scroll bug
+
 ## [0.8.1]
 - Added param to fix unintended scroll notification when child is scrollable with different axis (thanks @j3su5cr1st)
 
